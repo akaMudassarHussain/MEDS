@@ -1,6 +1,5 @@
 # This is a hello file.
 My second line.
-<<<<<<< Updated upstream
 =======
 Working on rebase commands.
 i am making stash commands work.
