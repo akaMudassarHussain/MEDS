@@ -1,4 +1,0 @@
-# This is a hello file.
-My second line.
-Working on rebase commands.
-i am making stash commands work.
