@@ -1,0 +1,127 @@
+<mxfile host="app.diagrams.net" modified="2026-07-28T00:00:00.000Z" agent="wrr-arbiter" version="24.0.0" type="device">
+  <diagram id="datapath-page" name="Datapath">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1000" pageHeight="800" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="dp_title" value="Datapath &amp;ndash; Pointer Register / Rotated Priority Encoder / Weight Counters" style="text;html=1;fontSize=18;fontStyle=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="40" y="10" width="820" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="dp_req_in" value="req[N-1:0]" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="40" y="200" width="160" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="dp_weight_in" value="weight[N-1:0][W-1:0]" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="40" y="440" width="160" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="dp_ptr_reg" value="Pointer Register&lt;br&gt;ptr_q&lt;br&gt;&lt;i&gt;(always_ff, priority_arbiter.sv)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="360" y="60" width="240" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="dp_encoder" value="Rotated Priority Encoder&lt;br&gt;(priority_arbiter.sv, combinational)&lt;br&gt;scans outward from ptr_q,&lt;br&gt;nearest asking requester wins&lt;br&gt;&amp;rarr; winner_idx, winner_valid" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="360" y="220" width="240" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="dp_weight_cnt" value="Weight Counters&lt;br&gt;(weight_counter.sv)&lt;br&gt;tracks credit_q for the current winner&lt;br&gt;reloads on new winner, decrements on same winner&lt;br&gt;&amp;rarr; effective_credit, exhausted" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="360" y="440" width="240" height="130" as="geometry" />
+        </mxCell>
+
+        <mxCell id="dp_ctrl_ref" value="Controller&lt;br&gt;&lt;i&gt;(see &amp;quot;Controller FSM&amp;quot; page)&lt;/i&gt;&lt;br&gt;in: winner_idx, winner_valid, exhausted&lt;br&gt;out: advance, grant, grant_valid" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=13;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="720" y="260" width="220" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="dp_e1" value="req" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="dp_req_in" target="dp_encoder">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="dp_e2" value="weight" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="dp_weight_in" target="dp_weight_cnt">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="dp_e3" value="ptr_q" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="dp_ptr_reg" target="dp_encoder">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="dp_e4" value="winner_idx, winner_valid" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="dp_encoder" target="dp_weight_cnt">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="dp_e5" value="winner_idx, winner_valid" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;dashed=1;exitX=1;exitY=0.3;entryX=0;entryY=0.3;" edge="1" parent="1" source="dp_encoder" target="dp_ctrl_ref">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="dp_e6" value="exhausted" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;dashed=1;exitX=1;exitY=0.7;entryX=0;entryY=0.7;" edge="1" parent="1" source="dp_weight_cnt" target="dp_ctrl_ref">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="dp_e7" value="advance, winner_idx" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=12;dashed=1;exitX=0.5;exitY=0;entryX=1;entryY=0.5;" edge="1" parent="1" source="dp_ctrl_ref" target="dp_ptr_reg">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="830" y="140" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="dp_legend" value="solid = same-page datapath signal &amp;nbsp;&amp;nbsp;|&amp;nbsp;&amp;nbsp; dashed = crosses to/from the Controller page" style="text;html=1;fontSize=12;fontStyle=2;align=left;verticalAlign=middle;fontColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="360" y="620" width="580" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+
+  <diagram id="controller-page" name="Controller FSM">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1000" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="c_title" value="Controller FSM / Update Logic &amp;ndash; example shown for N = 4" style="text;html=1;fontSize=18;fontStyle=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="40" y="10" width="820" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_s0" value="S0&lt;br&gt;ptr_q = 0&lt;br&gt;&lt;i&gt;credit &amp;gt; 0 (advance=0):&lt;/i&gt;&lt;br&gt;grant[winner], hold ptr_q" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="180" y="140" width="200" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_s1" value="S1&lt;br&gt;ptr_q = 1&lt;br&gt;&lt;i&gt;credit &amp;gt; 0 (advance=0):&lt;/i&gt;&lt;br&gt;grant[winner], hold ptr_q" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="600" y="140" width="200" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_s2" value="S2&lt;br&gt;ptr_q = 2&lt;br&gt;&lt;i&gt;credit &amp;gt; 0 (advance=0):&lt;/i&gt;&lt;br&gt;grant[winner], hold ptr_q" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="600" y="400" width="200" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_s3" value="S3&lt;br&gt;ptr_q = 3&lt;br&gt;&lt;i&gt;credit &amp;gt; 0 (advance=0):&lt;/i&gt;&lt;br&gt;grant[winner], hold ptr_q" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="180" y="400" width="200" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_e01" value="exhausted (advance=1):&lt;br&gt;grant[winner], ptr_q := winner_idx+1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;exitX=1;exitY=0.3;entryX=0;entryY=0.3;strokeWidth=2;" edge="1" parent="1" source="c_s0" target="c_s1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_e12" value="exhausted (advance=1):&lt;br&gt;grant[winner], ptr_q := winner_idx+1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;exitX=0.7;exitY=1;entryX=0.7;entryY=0;strokeWidth=2;" edge="1" parent="1" source="c_s1" target="c_s2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_e23" value="exhausted (advance=1):&lt;br&gt;grant[winner], ptr_q := winner_idx+1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;exitX=0;exitY=0.7;entryX=1;entryY=0.7;strokeWidth=2;" edge="1" parent="1" source="c_s2" target="c_s3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_e30" value="exhausted (advance=1):&lt;br&gt;grant[winner], ptr_q := 0 (wrap)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;fontSize=11;exitX=0.3;exitY=0;entryX=0.3;entryY=1;strokeWidth=2;" edge="1" parent="1" source="c_s3" target="c_s0">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_note" value="State = ptr_q, i.e. whose turn is next in the rotation.&lt;br&gt;The requester actually granted (winner_idx) can differ from ptr_q if that requester is idle &amp;mdash;&lt;br&gt;the Rotated Priority Encoder on the Datapath page selects the nearest &lt;i&gt;asking&lt;/i&gt; requester each cycle." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;dashed=1;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="180" y="580" width="620" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_logic" value="Controller Update Logic (weighted_rr_arbiter.sv, evaluated every clock edge)&lt;br&gt;&lt;br&gt;advance = winner_valid AND exhausted&lt;br&gt;next ptr_q = (winner_idx == N-1) ? 0 : winner_idx + 1&lt;br&gt;grant[winner_idx] := 1 &amp;mdash; registered, asserted one cycle after winner_valid settles&lt;br&gt;grant_valid := winner_valid" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=13;align=left;spacingLeft=12;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="180" y="680" width="620" height="140" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
